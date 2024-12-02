@@ -64,7 +64,7 @@ module Demux #(parameter N)(weight, sel, out0, out1);
 	input sel;
 	output reg [N-1:0] out0, out1;
 
-	always @(sel) begin
+	always @(weight, sel) begin
 		{out0 , out1} <= 0;
 		case(sel)
 			1'b0: out0 <= weight;
@@ -75,7 +75,8 @@ endmodule
 
 module SRAM #(parameter N) (clk, rst, write_data, write_addr, read_addr, wr_en, rd_en, full_write, full_read, read_data);
 	input clk, rst;
-	input [N-1:0] write_data, write_addr, read_addr;
+	input [N-1:0] write_data;
+	input [7:0] write_addr, read_addr;
 	input wr_en, rd_en;
 	output reg full_write, full_read;
 	output reg [N-1:0] read_data;
@@ -187,4 +188,3 @@ endmodule
 		else out <= out + inp * weight;
 	end
 endmodule*/
-
