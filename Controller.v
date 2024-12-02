@@ -1,7 +1,7 @@
 module Controller (clk, rst, full_write1, full_read1, full_write2, full_read2, wr_en1, rd_en1, wr_en2, rd_en2, demux_sel, mux_sel, write_addr1, read_addr1, write_addr2, read_addr2);
 	input clk, rst, full_write1, full_read1, full_write2, full_read2;
 	output reg wr_en1, rd_en1, wr_en2, rd_en2, demux_sel, mux_sel;
-	output reg [6:0] write_addr1, read_addr1, write_addr2, read_addr2;
+	output reg [7:0] write_addr1, read_addr1, write_addr2, read_addr2;
 
 	reg cnt_write1, cnt_read1, cnt_write2, cnt_read2;
 	wire co_write1, co_read1, co_write2, co_read2;
