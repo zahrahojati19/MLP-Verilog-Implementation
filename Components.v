@@ -92,7 +92,7 @@ module SRAM #(parameter N) (clk, rst, write_data, write_addr, read_addr, wr_en, 
 		end
 		else if (rd_en) begin 
 			read_data <= sram[read_addr];
-			if(read_addr == 8'd255) full_read <= 1'b1;
+			if(read_addr == 8'd255) full_read = 1'b1;
 			else full_read <= 1'b0;
 		end
 		else read_data <= read_data;
@@ -107,7 +107,7 @@ module SRAM #(parameter N) (clk, rst, write_data, write_addr, read_addr, wr_en, 
 		end
 		else if (wr_en) begin 
 			sram[write_addr] <= write_data;
-			if (write_addr == 8'd255) full_write <= 1'b1;
+			if (write_addr == 8'd255) full_write = 1'b1;
 			else full_write <= 1'b0;
 		end
 	end
