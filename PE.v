@@ -1,9 +1,11 @@
-module PE #(parameter N) (clk, rst, weight, iact, outp);
+module PE #(parameter N, parameter itr) (clk, rst, weight, iact, outp, done);
 	input clk, rst;
 	input [N-1:0] weight, iact;
+	output done;
 	output [(N/2)-1:0] outp;
 
-	wire [N-1:0] sram1_data, sram2_data, out_sram1, out_sram2, iact_reg, weight_mult, adder_in, reg_out, reg_in, relu_out, quantized_out;
+	wire [N-1:0] sram1_data, sram2_data, out_sram1, out_sram2, iact_reg, weight_mult, adder_in, reg_out, reg_in, relu_out;
+	wire [(N/2)-1:0] quantized_out;
 	wire [7:0] write_addr1, write_addr2, read_addr1, read_addr2;
 	wire full_write1, full_write2, full_read1, full_read2, wr_en1, wr_en2, rd_en1, rd_en2, demux_sel, mux_sel;
 
@@ -18,7 +20,9 @@ module PE #(parameter N) (clk, rst, weight, iact, outp);
 	Register #(N) register_add(.clk(clk), .rst(rst), .inp(reg_in), .out(reg_out));
 
 	ReLu #(N) relu_inst(.clk(clk), .rst(rst), .inp(reg_in), .out(relu_out));
-	Quantizer #(N) quant_inst(.fixed_in(relu_out), .quantized_out(outp));
+	Quantizer #(N) quant_inst(.fixed_in(relu_out), .quantized_out(quantized_out));
 	
-	Controller cntrl (.clk(clk), .rst(rst), .full_write1(full_write1), .full_read1(full_read1), .full_write2(full_write2), .full_read2(full_read2), .wr_en1(wr_en1), .rd_en1(rd_en1), .wr_en2(wr_en2), .rd_en2(rd_en2), .demux_sel(demux_sel), .mux_sel(mux_sel), .write_addr1(write_addr1), .read_addr1(read_addr1), .write_addr2(write_addr2), .read_addr2(read_addr2));
+	assign outp = done ? outp : quantized_out;
+	
+	Controller #(itr) cntrl (.clk(clk), .rst(rst), .full_write1(full_write1), .full_read1(full_read1), .full_write2(full_write2), .full_read2(full_read2), .wr_en1(wr_en1), .rd_en1(rd_en1), .wr_en2(wr_en2), .rd_en2(rd_en2), .demux_sel(demux_sel), .mux_sel(mux_sel), .done(done), .write_addr1(write_addr1), .read_addr1(read_addr1), .write_addr2(write_addr2), .read_addr2(read_addr2));
 endmodule
